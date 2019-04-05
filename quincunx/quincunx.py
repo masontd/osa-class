@@ -19,7 +19,7 @@ class Board:
     def __init__(self, bins: int):
         """Make a new board of the specified size"""
         self._bins = [0] * bins
-        self._pegs = bins // 2
+        self._pegs = bins // 2 #number of LEVELS of pegs - 2 sublevels in each level
 
     def status(self, pos: int):
         """Print status"""
@@ -61,6 +61,7 @@ class Bean(threading.Thread):
         self.prob = prob #actually compute with random?
         self.lock = lock
         self.board[start] += 1
+        #call to super()?
 
     def move_left(self):
         """Move a bean left"""
@@ -74,7 +75,16 @@ class Bean(threading.Thread):
         """Run a bean through the pegs"""
         #compute chance and whether to move it left or right
         #use lock here
-        raise NotImplementedError
+        self.lock.acquire()
+        try:
+            for i in range(board.pegs()*2):
+
+            #acquired lock
+            #for loop
+            #compute whether to move bean left or right
+
+        finally:
+            self.lock.release()
 
 
 def main():
@@ -97,13 +107,22 @@ def main():
     board = Board(results.binNum)
     #Create jobs (beans)
     for particle in range(1000):
-        t = threading.Thread(target=Bean, args=(board, board.pegs(), 0.5, lock))
+        #t = threading.Thread(target=Bean, args=(board, results.start, results.prob, lock))
+        t = Bean(board, results.start, results.prob, lock)
         jobs.append(t)
-        t.start()
+        #t.start()
     # Print the board status
+    board.status(results.beanNum)
     # Start jobs
-    # Stop jobs
+    for beanidx in range(len(jobs)):
+        jobs[beanidx].start()
+    # Stop jobs JOIN THEM
+    main_thread = threading.main_thread()
+    for t in threading.enumerate():
+        if t is not main_thread:
+            t.join()
     # Print the board status
+    board.status(results.beanNum)
     print("Done")
 
 
