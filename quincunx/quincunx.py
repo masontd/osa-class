@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#BY MASON DONNOHUE
 """
 The *bean machine*, also known as the *Galton Board* or *quincunx*, is a device invented by Sir Francis Galton to demonstrate the central limit theorem, in particular that the normal distribution is approximate to the binomial distribution.
 """
@@ -21,13 +22,19 @@ class Board:
         self._bins = [0] * bins
         self._pegs = bins // 2 #number of LEVELS of pegs - 2 sublevels in each level
 
-    def status(self, pos: int):
+    def status(self):
         """Print status"""
-        returnstr = ""
-        for i in range(self._bins):
-            returnstr += "| " + self._bins[i] + " "
-        returnstr += "|" + " " + str(pos)
-        return returnstr
+        sum = 0
+        for bin in self._bins:
+            sum += bin
+            print("|{:^5}".format(bin),end='')
+        print("|   " + str(sum))
+
+        #returnstr = ""
+        #for i in range(len(self._bins)):
+        #    returnstr += "| " + str(self._bins[i]) + " "
+        #returnstr += "|" + " " + str(pos)
+        #return returnstr
 
     def __len__(self):
         """Return the board size"""
@@ -61,15 +68,25 @@ class Bean(threading.Thread):
         self.prob = prob #actually compute with random?
         self.lock = lock
         self.board[start] += 1
+        threading.Thread.__init__(self, target=self.run)
         #call to super()?
 
     def move_left(self):
         """Move a bean left"""
-        raise NotImplementedError
+        #double check that if you're moving left its not less than 0
+        if not((self.pos-1)<0):
+            self.board[self.pos] -= 1
+            self.pos -= 1
+            self.board[self.pos] += 1
+        
 
     def move_right(self):
         """Move a bean right"""
-        raise NotImplementedError
+        #double check to make sure the index does not get greater (self.pos) than number of bins
+        if not((self.pos+1>len(self.board))):
+            self.board[self.pos] -= 1
+            self.pos += 1
+            self.board[self.pos] += 1
 
     def run(self):
         """Run a bean through the pegs"""
@@ -77,8 +94,18 @@ class Bean(threading.Thread):
         #use lock here
         self.lock.acquire()
         try:
-            for i in range(board.pegs()*2):
-
+            for i in range(self.board.pegs):
+                chance = random.random()
+                if chance < self.prob/2:
+                    # go left (left-left)
+                    self.move_left()
+                elif chance < self.prob:
+                    #go right (right-right)
+                    self.move_right()
+                else:
+                    #right-left or left-right
+                    pass
+            
             #acquired lock
             #for loop
             #compute whether to move bean left or right
@@ -91,10 +118,10 @@ def main():
     """Main function"""
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Process the arguments.")
-    parser.add_argument('--beans', action="store", dest="beanNum", type=int)
-    parser.add_argument('--bins', action="store", dest="binNum", type=int)
-    parser.add_argument('--start', action="store", dest="start", type=int)
-    parser.add_argument('--prob', action="store", dest="prob", type=float)
+    parser.add_argument('--beans', action="store", dest="beanNum", type=int, default=1000)
+    parser.add_argument('--bins', action="store", dest="binNum", type=int, default=11)
+    parser.add_argument('--start', action="store", dest="start", type=int, default=5)
+    parser.add_argument('--prob', action="store", dest="prob", type=float, default=0.5)
     results = parser.parse_args()
     print("Beans: {}, bins: {}, start: {}, prob: {}".format(results.beanNum, results.binNum, results.start, results.prob))
 
@@ -112,17 +139,22 @@ def main():
         jobs.append(t)
         #t.start()
     # Print the board status
-    board.status(results.beanNum)
+    board.status()
     # Start jobs
     for beanidx in range(len(jobs)):
         jobs[beanidx].start()
     # Stop jobs JOIN THEM
-    main_thread = threading.main_thread()
-    for t in threading.enumerate():
-        if t is not main_thread:
-            t.join()
+    for beanidx in range(len(jobs)):
+        jobs[beanidx].join()
+    
+    #main_thread = threading.main_thread()
+    #for t in threading.enumerate():
+    #    if t is not main_thread:
+    #        t.join()
+
+
     # Print the board status
-    board.status(results.beanNum)
+    board.status()
     print("Done")
 
 
