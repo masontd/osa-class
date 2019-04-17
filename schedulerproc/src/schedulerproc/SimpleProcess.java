@@ -15,11 +15,13 @@ public class SimpleProcess {
     private final int nextBurst;
     private final int priority;
     private final int arrivalTime;
+    private int timeLeft;
 
     public SimpleProcess(int nextBurst, int priority, int arrivalTime) {
         this.nextBurst = nextBurst;
         this.priority = priority;
         this.arrivalTime = arrivalTime;
+        this.timeLeft = nextBurst;
     }
 
     public int getNextBurst() {
@@ -32,5 +34,12 @@ public class SimpleProcess {
 
     public int getArrivalTime() {
         return this.arrivalTime;
+    }
+    
+    public void preEmpt(int i) {
+        this.timeLeft -=i;
+    }
+    public int getTimeLeft(){
+        return this.timeLeft;
     }
 }

@@ -88,22 +88,47 @@ public class ProcessScheduler {
      * @return average waiting time for all processes
      */
     public double useRoundRobin() {
-        ArrayList<SimpleProcess> newQueue = this.readyQueue;
-        ArrayList newQueuePreEmpt = new ArrayList<>(newQueue.size());
-        for(int i = 0; i < newQueue.size(); i++){
-            if ((newQueue.get(i).getNextBurst()/this.rrQuantum) < 1 ){
-                newQueuePreEmpt.set(i, 1);
-            }
-            else{
-              newQueuePreEmpt.set(i, (newQueue.get(i).getNextBurst()/this.rrQuantum));
+        
+        int n = this.readyQueue.size();
+        int totaltime = 0;
+        int waitTimes[] = new int[n];
+        int burstTimes[] = new int[n];
+        for (int i = 0; i < n; i ++){
+            burstTimes[i] = this.readyQueue.get(i).getNextBurst();
+            
+        }
+        
+        int t = 0; //current time
+        
+        boolean done = false;
+        while(done == false){
+            done = true;
+            for (int i = 0; i < n; i ++)
+            {
+                if (burstTimes[i] > 0)
+                {
+                  done = false;
+                  if(burstTimes[i] > this.rrQuantum)
+                  {
+                      totaltime+=this.rrQuantum;
+                      burstTimes[i] -= this.rrQuantum;
+                  }
+                  else
+                  {
+                      totaltime = totaltime + burstTimes[i];
+                      waitTimes[i] = totaltime - this.readyQueue.get(i).getNextBurst();
+                      burstTimes[i] = 0;
+                  }                  
+                }
             }
         }
-        for(int i = 0; i < newQueuePreEmpt.size(); i++){
-            System.out.println(newQueuePreEmpt.get(i));
+        int total_wt = 0;
+        for (int i=0; i<n; i++)
+        {
+            total_wt = total_wt + waitTimes[i];
         }
-        return 5.5;
+        return (double)total_wt/(double)n;    
 
     }
     
-
 }
