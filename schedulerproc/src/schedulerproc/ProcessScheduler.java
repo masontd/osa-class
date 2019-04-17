@@ -37,11 +37,13 @@ public class ProcessScheduler {
      */
     public double useFirstComeFirstServe() {
         double waittime = 0;
-        for(int i = 0; i < this.readyQueue.size()-1; i++){
+        double sum = 0;
+        for(int i = 0; i < this.readyQueue.size(); i++){
+            sum += waittime;
             SimpleProcess derp = this.readyQueue.get(i);
-            waittime += waittime + derp.getNextBurst();
+            waittime += derp.getNextBurst();
         }
-        return waittime / this.readyQueue.size();
+        return sum / this.readyQueue.size();
     }
 
     /**
@@ -53,11 +55,13 @@ public class ProcessScheduler {
         ArrayList<SimpleProcess> newQueue = this.readyQueue;
         newQueue.sort(Comparator.comparing(SimpleProcess::getNextBurst));
         double waittime = 0;
-        for(int i = 0; i < this.readyQueue.size()-1; i++){
+        double sum = 0;
+        for(int i = 0; i < this.readyQueue.size(); i++){
+            sum += waittime;
             SimpleProcess derp = this.readyQueue.get(i);
-            waittime += waittime + derp.getNextBurst();
+            waittime += derp.getNextBurst();
         }
-        return waittime / this.readyQueue.size();
+        return sum / this.readyQueue.size();
     }
 
     /**
@@ -66,7 +70,16 @@ public class ProcessScheduler {
      * @return average waiting time for all processes
      */
     public double usePriorityScheduling() {
-        throw new UnsupportedOperationException();
+        ArrayList<SimpleProcess> newQueue = this.readyQueue;
+        newQueue.sort(Comparator.comparing(SimpleProcess::getPriority));
+        double waittime = 0;
+        double sum = 0;
+        for(int i = 0; i < this.readyQueue.size(); i++){
+            sum += waittime;
+            SimpleProcess derp = this.readyQueue.get(i);
+            waittime += derp.getNextBurst();
+        }
+        return sum / this.readyQueue.size();    
     }
 
     /**
@@ -75,7 +88,21 @@ public class ProcessScheduler {
      * @return average waiting time for all processes
      */
     public double useRoundRobin() {
-        throw new UnsupportedOperationException();
+        ArrayList<SimpleProcess> newQueue = this.readyQueue;
+        ArrayList newQueuePreEmpt = new ArrayList<>(newQueue.size());
+        for(int i = 0; i < newQueue.size(); i++){
+            if ((newQueue.get(i).getNextBurst()/this.rrQuantum) < 1 ){
+                newQueuePreEmpt.set(i, 1);
+            }
+            else{
+              newQueuePreEmpt.set(i, (newQueue.get(i).getNextBurst()/this.rrQuantum));
+            }
+        }
+        for(int i = 0; i < newQueuePreEmpt.size(); i++){
+            System.out.println(newQueuePreEmpt.get(i));
+        }
+        return 5.5;
+
     }
     
 
