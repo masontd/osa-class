@@ -1,4 +1,4 @@
-package schedulermem;
+package schedulermemr;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -162,8 +162,8 @@ public class MemorySchedulerTest {
         instance3.useLRU(referenceString);
         instance4.useLRU(referenceString);
 
-        int hw10q8 = 14;  // replace with the answer to the question 8 of the the homework 10
-        int hw10q9 = 12;  // replace with the answer to the question 9 of the the homework 10
+        int hw10q8 = 0;  // replace with the answer to the question 8 of the the homework 10
+        int hw10q9 = 0;  // replace with the answer to the question 9 of the the homework 10
 
         assertEquals(hw10q8, instance3.getPageFaultCount());
         assertEquals(hw10q9, instance4.getPageFaultCount());
