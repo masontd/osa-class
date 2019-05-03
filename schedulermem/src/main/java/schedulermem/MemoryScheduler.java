@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Queue;
+import java.util.LinkedList;
 /**
  * @author [name]
  */
@@ -25,8 +27,37 @@ public class MemoryScheduler {
     }
 
     public void useFIFO(String referenceString) {
+        System.out.println("HERE111");
 
-        throw new UnsupportedOperationException();
+        String[] commaSeparatedArr = referenceString.split("\\s*,\\s*");
+        HashMap<Integer, SimplePage> pages = new HashMap<Integer, SimplePage>();
+
+        for(int i = 0; i < commaSeparatedArr.length; i ++){
+            if(!(pages.containsKey(Integer.parseInt(commaSeparatedArr[i])))){
+                pages.put(Integer.parseInt(commaSeparatedArr[i]), new SimplePage(Integer.parseInt(commaSeparatedArr[i])));
+            }
+        }
+        
+        Queue<SimplePage> frames = new LinkedList<>();
+        
+        int stringindex = 0;
+        while(frames.size()<this.numFrames){
+            this.pageFaultCount ++;
+            frames.add(pages.get(Integer.parseInt(commaSeparatedArr[stringindex])));
+            stringindex ++;
+        }
+        
+        while(stringindex < commaSeparatedArr.length){
+            if(!(frames.contains(pages.get(Integer.parseInt(commaSeparatedArr[stringindex]))))){
+                this.pageFaultCount ++;
+                frames.remove();
+                frames.add(pages.get(Integer.parseInt(commaSeparatedArr[stringindex])));
+                
+            }
+            stringindex ++;
+        }
+        
+        //throw new UnsupportedOperationException();
     }
 
     public void useOPT(String referenceString) {
