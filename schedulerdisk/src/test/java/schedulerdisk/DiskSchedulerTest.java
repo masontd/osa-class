@@ -96,7 +96,7 @@ public class DiskSchedulerTest {
         instance5000.useSSTF(requestQueue2);
 
         assertEquals(236, instance200.getTotalMoves());
-        assertEquals(0, instance5000.getTotalMoves());  // Homework 11, question 6
+        assertEquals(1745, instance5000.getTotalMoves());  // Homework 11, question 6
     }
 
     /**
