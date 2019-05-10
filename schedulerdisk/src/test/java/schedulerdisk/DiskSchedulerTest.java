@@ -82,7 +82,7 @@ public class DiskSchedulerTest {
         instance5000.useFCFS(requestQueue2);
 
         assertEquals(640, instance200.getTotalMoves());
-        assertEquals(0, instance5000.getTotalMoves());
+        assertEquals(7081, instance5000.getTotalMoves());
     }
 
     /**
@@ -110,7 +110,7 @@ public class DiskSchedulerTest {
         instance5000.useLOOK(requestQueue2);
 
         assertEquals(208, instance200.getTotalMoves());
-        assertEquals(0, instance5000.getTotalMoves());  // Homework 11, question 8
+        assertEquals(3319, instance5000.getTotalMoves());  // Homework 11, question 8
     }
 
     /**
@@ -123,8 +123,8 @@ public class DiskSchedulerTest {
         instance200.useCLOOK(requestQueue1);
         instance5000.useCLOOK(requestQueue2);
 
-        assertEquals(322, instance200.getTotalMoves());
-        assertEquals(0, instance5000.getTotalMoves());  // Homework 11, question 10
+        assertEquals(326, instance200.getTotalMoves());
+        assertEquals(3363, instance5000.getTotalMoves());  // Homework 11, question 10
     }
 
 }
