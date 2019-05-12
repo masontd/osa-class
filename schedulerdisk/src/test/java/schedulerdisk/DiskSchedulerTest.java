@@ -123,7 +123,7 @@ public class DiskSchedulerTest {
         instance200.useCLOOK(requestQueue1);
         instance5000.useCLOOK(requestQueue2);
 
-        assertEquals(326, instance200.getTotalMoves());
+        assertEquals(322, instance200.getTotalMoves());
         assertEquals(3363, instance5000.getTotalMoves());  // Homework 11, question 10
     }
 
